@@ -1,705 +1,61 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="theme-color" content="#0f0f0f">
     <title>QuickTalk - Modern AI Chat</title>
-    <style>
-        /* ===== CSS VARIABLES FOR THEMING ===== */
-        :root {
-            --bg-primary: #0f0f0f;
-            --bg-secondary: #1a1a1a;
-            --bg-tertiary: #252525;
-            --text-primary: #ffffff;
-            --text-secondary: #b3b3b3;
-            --accent-primary: #6366f1;
-            --accent-hover: #4f46e5;
-            --user-msg-bg: #6366f1;
-            --bot-msg-bg: #252525;
-            --border-color: #333;
-            --shadow: rgba(0, 0, 0, 0.3);
-            --input-bg: #1e1e1e;
-        }
 
-        [data-theme="light"] {
-            --bg-primary: #ffffff;
-            --bg-secondary: #f8f9fa;
-            --bg-tertiary: #e9ecef;
-            --text-primary: #1a1a1a;
-            --text-secondary: #6c757d;
-            --accent-primary: #6366f1;
-            --accent-hover: #4f46e5;
-            --user-msg-bg: #6366f1;
-            --bot-msg-bg: #e9ecef;
-            --border-color: #dee2e6;
-            --shadow: rgba(0, 0, 0, 0.1);
-            --input-bg: #ffffff;
-        }
-
-        /* ===== BASE STYLES ===== */
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            background: var(--bg-primary);
-            color: var(--text-primary);
-            height: 100vh;
-            height: 100dvh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-            transition: background 0.3s ease, color 0.3s ease;
-            overflow: hidden;
-            position: fixed;
-            width: 100%;
-            top: 0;
-            left: 0;
-        }
-
-        /* ===== CHAT CONTAINER ===== */
-        .chat-container {
-            width: 100%;
-            max-width: 900px;
-            height: 90vh;
-            height: 90dvh;
-            max-height: 800px;
-            background: var(--bg-secondary);
-            border-radius: 24px;
-            box-shadow: 0 20px 60px var(--shadow);
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-            border: 1px solid var(--border-color);
-            transition: all 0.3s ease;
-            position: relative;
-        }
-
-        /* ===== HEADER ===== */
-        .chat-header {
-            background: var(--bg-tertiary);
-            padding: 20px 24px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .header-left {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .logo {
-            width: 40px;
-            height: 40px;
-            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
-        }
-
-        .header-title {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .title {
-            font-size: 1.25rem;
-            font-weight: 700;
-            color: var(--text-primary);
-        }
-
-        .subtitle {
-            font-size: 0.75rem;
-            color: var(--text-secondary);
-        }
-
-        .header-actions {
-            display: flex;
-            gap: 8px;
-        }
-
-        /* ===== THEME TOGGLE ===== */
-        .theme-toggle {
-            background: var(--bg-secondary);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            width: 44px;
-            height: 44px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-size: 20px;
-        }
-
-        .theme-toggle:hover {
-            background: var(--bg-primary);
-            transform: scale(1.05);
-        }
-
-        /* ===== MESSAGES AREA ===== */
-        .chat-messages {
-            flex: 1;
-            padding: 24px;
-            overflow-y: auto;
-            background: var(--bg-primary);
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-        }
-
-        .chat-messages::-webkit-scrollbar {
-            width: 8px;
-        }
-
-        .chat-messages::-webkit-scrollbar-track {
-            background: var(--bg-secondary);
-        }
-
-        .chat-messages::-webkit-scrollbar-thumb {
-            background: var(--border-color);
-            border-radius: 4px;
-        }
-
-        .chat-messages::-webkit-scrollbar-thumb:hover {
-            background: var(--text-secondary);
-        }
-
-        /* ===== MESSAGE BUBBLES ===== */
-        .message {
-            display: flex;
-            gap: 12px;
-            max-width: 80%;
-            animation: slideIn 0.3s ease;
-        }
-
-        .user-message {
-            align-self: flex-end;
-            flex-direction: row-reverse;
-        }
-
-        .bot-message {
-            align-self: flex-start;
-        }
-
-        .message-avatar {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-            font-size: 18px;
-            font-weight: 600;
-        }
-
-        .user-message .message-avatar {
-            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
-            color: white;
-        }
-
-        .bot-message .message-avatar {
-            background: var(--bg-tertiary);
-            border: 2px solid var(--border-color);
-        }
-
-        .message-bubble {
-            padding: 14px 18px;
-            border-radius: 18px;
-            word-wrap: break-word;
-            line-height: 1.5;
-        }
-
-        .user-message .message-bubble {
-            background: var(--user-msg-bg);
-            color: white;
-            border-bottom-right-radius: 4px;
-        }
-
-        .bot-message .message-bubble {
-            background: var(--bot-msg-bg);
-            color: var(--text-primary);
-            border-bottom-left-radius: 4px;
-            border: 1px solid var(--border-color);
-        }
-
-        .message-time {
-            font-size: 0.7rem;
-            color: var(--text-secondary);
-            margin-top: 4px;
-            text-align: right;
-        }
-
-        /* ===== FILE ATTACHMENT STYLES ===== */
-        .file-attachment {
-            margin-top: 8px;
-            border-radius: 12px;
-            overflow: hidden;
-            max-width: 100%;
-        }
-
-        .file-attachment img {
-            max-width: 100%;
-            max-height: 300px;
-            border-radius: 12px;
-            display: block;
-            cursor: pointer;
-            transition: transform 0.2s;
-        }
-
-        .file-attachment img:hover {
-            transform: scale(1.02);
-        }
-
-        .file-info {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 12px;
-            background: rgba(0, 0, 0, 0.2);
-            border-radius: 12px;
-            margin-top: 8px;
-        }
-
-        .user-message .file-info {
-            background: rgba(255, 255, 255, 0.2);
-        }
-
-        .file-icon {
-            font-size: 24px;
-            flex-shrink: 0;
-        }
-
-        .file-details {
-            flex: 1;
-            min-width: 0;
-        }
-
-        .file-name {
-            font-weight: 600;
-            font-size: 0.9rem;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
-
-        .file-size {
-            font-size: 0.75rem;
-            opacity: 0.8;
-        }
-
-        /* ===== TYPING INDICATOR ===== */
-        .typing-indicator {
-            display: flex;
-            gap: 12px;
-            align-self: flex-start;
-            max-width: 80%;
-        }
-
-        .typing-bubble {
-            display: flex;
-            gap: 6px;
-            padding: 14px 18px;
-            background: var(--bot-msg-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 18px;
-            border-bottom-left-radius: 4px;
-        }
-
-        .typing-bubble span {
-            width: 8px;
-            height: 8px;
-            background: var(--text-secondary);
-            border-radius: 50%;
-            animation: typing 1.4s infinite ease-in-out;
-        }
-
-        .typing-bubble span:nth-child(2) {
-            animation-delay: 0.2s;
-        }
-
-        .typing-bubble span:nth-child(3) {
-            animation-delay: 0.4s;
-        }
-
-        /* ===== INPUT AREA ===== */
-        .chat-input-container {
-            padding: 20px 24px;
-            background: var(--bg-secondary);
-            border-top: 1px solid var(--border-color);
-        }
-
-        .input-wrapper {
-            display: flex;
-            gap: 12px;
-            align-items: flex-end;
-        }
-
-        .attachment-btn {
-            background: var(--bg-tertiary);
-            border: 2px solid var(--border-color);
-            border-radius: 16px;
-            width: 52px;
-            height: 52px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-size: 22px;
-            flex-shrink: 0;
-            position: relative;
-        }
-
-        .attachment-btn:hover {
-            background: var(--accent-primary);
-            border-color: var(--accent-primary);
-            transform: rotate(45deg);
-        }
-
-        .input-field {
-            flex: 1;
-            background: var(--input-bg);
-            border: 2px solid var(--border-color);
-            border-radius: 16px;
-            padding: 14px 18px;
-            font-size: 15px;
-            color: var(--text-primary);
-            outline: none;
-            transition: all 0.3s ease;
-            resize: none;
-            max-height: 120px;
-            font-family: inherit;
-        }
-
-        .input-field:focus {
-            border-color: var(--accent-primary);
-            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
-        }
-
-        .input-field::placeholder {
-            color: var(--text-secondary);
-        }
-
-        .send-btn {
-            background: var(--accent-primary);
-            color: white;
-            border: none;
-            border-radius: 16px;
-            width: 52px;
-            height: 52px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-size: 22px;
-            flex-shrink: 0;
-        }
-
-        .send-btn:hover:not(:disabled) {
-            background: var(--accent-hover);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
-        }
-
-        .send-btn:active:not(:disabled) {
-            transform: translateY(0);
-        }
-
-        .send-btn:disabled {
-            background: var(--text-secondary);
-            cursor: not-allowed;
-            opacity: 0.5;
-        }
-
-        /* ===== ATTACHMENT MENU ===== */
-        .attachment-menu {
-            position: absolute;
-            bottom: 100%;
-            left: 0;
-            margin-bottom: 12px;
-            background: var(--bg-tertiary);
-            border: 1px solid var(--border-color);
-            border-radius: 16px;
-            padding: 8px;
-            display: none;
-            flex-direction: column;
-            gap: 4px;
-            box-shadow: 0 8px 24px var(--shadow);
-            min-width: 200px;
-            z-index: 100;
-        }
-
-        .attachment-menu.active {
-            display: flex;
-            animation: slideUp 0.2s ease;
-        }
-
-        .attachment-option {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 12px 16px;
-            border-radius: 12px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            color: var(--text-primary);
-            font-size: 15px;
-        }
-
-        .attachment-option:hover {
-            background: var(--bg-secondary);
-        }
-
-        .attachment-option-icon {
-            font-size: 20px;
-            width: 24px;
-            text-align: center;
-        }
-
-        /* ===== FILE PREVIEW ===== */
-        .file-preview-container {
-            display: none;
-            padding: 12px 24px;
-            background: var(--bg-tertiary);
-            border-top: 1px solid var(--border-color);
-            gap: 12px;
-            overflow-x: auto;
-        }
-
-        .file-preview-container.active {
-            display: flex;
-        }
-
-        .file-preview {
-            position: relative;
-            flex-shrink: 0;
-        }
-
-        .file-preview img {
-            width: 80px;
-            height: 80px;
-            object-fit: cover;
-            border-radius: 12px;
-            border: 2px solid var(--border-color);
-        }
-
-        .file-preview-info {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 12px;
-            background: var(--bg-secondary);
-            border-radius: 12px;
-            border: 2px solid var(--border-color);
-            min-width: 200px;
-        }
-
-        .remove-file {
-            position: absolute;
-            top: -8px;
-            right: -8px;
-            width: 24px;
-            height: 24px;
-            background: #ef4444;
-            color: white;
-            border: 2px solid var(--bg-tertiary);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: bold;
-        }
-
-        .remove-file:hover {
-            background: #dc2626;
-        }
-
-        /* Hidden file inputs */
-        .hidden-input {
-            display: none;
-        }
-
-        /* ===== ANIMATIONS ===== */
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes typing {
-            0%, 60%, 100% {
-                transform: translateY(0);
-                opacity: 0.5;
-            }
-            30% {
-                transform: translateY(-8px);
-                opacity: 1;
-            }
-        }
-
-        /* ===== RESPONSIVE ===== */
-        @media (max-width: 768px) {
-            body {
-                padding: 0;
-            }
-
-            .chat-container {
-                height: 100vh;
-                height: 100dvh;
-                max-height: 100vh;
-                max-height: 100dvh;
-                border-radius: 0;
-                max-width: 100%;
-            }
-
-            .chat-header {
-                padding: max(env(safe-area-inset-top), 16px) 16px 16px 16px;
-            }
-
-            .logo {
-                width: 36px;
-                height: 36px;
-                font-size: 18px;
-            }
-
-            .title {
-                font-size: 1.1rem;
-            }
-
-            .subtitle {
-                display: none;
-            }
-
-            .theme-toggle {
-                width: 40px;
-                height: 40px;
-                font-size: 18px;
-            }
-
-            .chat-messages {
-                padding: 16px;
-                padding-bottom: max(env(safe-area-inset-bottom), 16px);
-            }
-
-            .message {
-                max-width: 85%;
-            }
-
-            .message-avatar {
-                width: 32px;
-                height: 32px;
-                font-size: 16px;
-            }
-
-            .message-bubble {
-                padding: 12px 16px;
-                font-size: 15px;
-            }
-
-            .chat-input-container {
-                padding: 12px 16px;
-                padding-bottom: max(env(safe-area-inset-bottom, 12px));
-            }
-
-            .file-preview-container {
-                padding: 12px 16px;
-            }
-
-            .input-field {
-                font-size: 16px;
-                padding: 12px 16px;
-                border-radius: 14px;
-            }
-
-            .send-btn,
-            .attachment-btn {
-                width: 48px;
-                height: 48px;
-                border-radius: 14px;
-                font-size: 20px;
-            }
-        }
-
-        @media (max-width: 380px) {
-            .send-btn,
-            .attachment-btn {
-                width: 44px;
-                height: 44px;
-            }
-        }
-
-        /* ===== WELCOME MESSAGE ===== */
-        .welcome-message {
-            text-align: center;
-            padding: 40px 20px;
-            color: var(--text-secondary);
-        }
-
-        .welcome-icon {
-            font-size: 48px;
-            margin-bottom: 16px;
-        }
-
-        .welcome-title {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--text-primary);
-            margin-bottom: 8px;
-        }
-
-        .welcome-subtitle {
-            font-size: 0.95rem;
-        }
-    </style>
+    <!-- Google Fonts: Outfit for headings, Inter for body -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@500;600;700&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="style.css">
+    <!-- FontAwesome for better icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
+
 <body>
+    <div class="background-glow"></div>
+    <div class="background-glow-secondary"></div>
+
     <div class="chat-container">
         <!-- Header -->
         <div class="chat-header">
             <div class="header-left">
-                <div class="logo"></div>
+                <div class="logo-container">
+                    <svg class="logo-svg" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <linearGradient id="logo-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" style="stop-color:#6366f1" />
+                                <stop offset="100%" style="stop-color:#a855f7" />
+                            </linearGradient>
+                        </defs>
+                        <path
+                            d="M44 24C44 35.0457 35.0457 44 24 44C18.068 44 12.7354 41.4287 9.00693 37.332C8.59979 36.8848 7.95777 36.7533 7.4208 36.9535L4.47167 38.0538C3.46824 38.4282 2.45789 37.5855 2.67138 36.536L3.48622 32.5309C3.626 31.8439 3.3283 31.1417 2.76865 30.7303C1.04543 29.4636 0 27.3364 0 25C0 19.4772 4.47715 15 10 15H34C39.5228 15 44 19.4772 44 25Z"
+                            fill="url(#logo-gradient)" fill-opacity="0.2" />
+                        <path d="M24 4C35.0457 4 44 12.9543 44 24H24V4Z" fill="url(#logo-gradient)" />
+                        <circle cx="24" cy="24" r="6" fill="white" fill-opacity="0.9" />
+                        <circle cx="34" cy="14" r="3" fill="#a855f7" />
+                    </svg>
+                </div>
                 <div class="header-title">
                     <div class="title">QuickTalk</div>
-                    <div class="subtitle">Your personal AI assistant</div>
+                    <div class="subtitle">
+                        <span class="status-dot"></span> Online
+                    </div>
                 </div>
             </div>
             <div class="header-actions">
                 <button class="theme-toggle" id="theme-toggle" title="Toggle theme">
-                    <span id="theme-icon">🌙</span>
+                    <i class="fa-solid fa-moon" id="theme-icon"></i>
                 </button>
             </div>
         </div>
@@ -707,9 +63,19 @@
         <!-- Messages Area -->
         <div class="chat-messages" id="chat-messages">
             <div class="welcome-message">
-                <div class="welcome-icon"></div>
-                <div class="welcome-title">Welcome to QuickTalk</div>
-                <div class="welcome-subtitle">Start a conversation with our AI assistant. Share photos, documents, and more!</div>
+                <div class="welcome-visual">
+                    <div class="visual-circle"></div>
+                    <i class="fa-solid fa-robot welcome-icon"></i>
+                </div>
+                <div class="welcome-title">Hello, I'm QuickTalk</div>
+                <div class="welcome-subtitle">I can help you analyze documents, identify images, and answer your
+                    questions.</div>
+
+                <div class="suggestion-chips">
+                    <button class="chip">📝 Summarize PDF</button>
+                    <button class="chip">🖼️ Analyze Image</button>
+                    <button class="chip">💡 Creative Ideas</button>
+                </div>
             </div>
         </div>
 
@@ -722,19 +88,19 @@
                 <!-- Attachment Button with Menu -->
                 <div style="position: relative;">
                     <button class="attachment-btn" id="attachment-btn" title="Attach files">
-                        <span>📎</span>
+                        <i class="fa-solid fa-paperclip"></i>
                     </button>
                     <div class="attachment-menu" id="attachment-menu">
                         <div class="attachment-option" id="photo-option">
-                            <span class="attachment-option-icon">🖼️</span>
+                            <span class="attachment-option-icon"><i class="fa-regular fa-image"></i></span>
                             <span>Photo</span>
                         </div>
                         <div class="attachment-option" id="camera-option">
-                            <span class="attachment-option-icon">📷</span>
+                            <span class="attachment-option-icon"><i class="fa-solid fa-camera"></i></span>
                             <span>Camera</span>
                         </div>
                         <div class="attachment-option" id="file-option">
-                            <span class="attachment-option-icon">📄</span>
+                            <span class="attachment-option-icon"><i class="fa-regular fa-file"></i></span>
                             <span>Document</span>
                         </div>
                     </div>
@@ -743,430 +109,25 @@
                 <!-- Hidden File Inputs -->
                 <input type="file" id="photo-input" class="hidden-input" accept="image/*" multiple>
                 <input type="file" id="camera-input" class="hidden-input" accept="image/*" capture="environment">
-                <input type="file" id="file-input" class="hidden-input" accept=".pdf,.doc,.docx,.txt,.csv,.json" multiple>
+                <input type="file" id="file-input" class="hidden-input" accept=".pdf,.doc,.docx,.txt,.csv,.json"
+                    multiple>
 
-                <textarea 
-                    id="user-input" 
-                    class="input-field" 
-                    placeholder="Type your message..." 
-                    rows="1"
-                    autocomplete="off"
-                ></textarea>
+                <div class="input-field-wrapper">
+                    <textarea id="user-input" class="input-field" placeholder="Message QuickTalk..." rows="1"
+                        autocomplete="off"></textarea>
+                </div>
+
                 <button id="send-btn" class="send-btn" title="Send message">
-                    <span>➤</span>
+                    <i class="fa-solid fa-paper-plane"></i>
                 </button>
+            </div>
+            <div class="input-footer">
+                AI can make mistakes. Please verify important information.
             </div>
         </div>
     </div>
 
-    <script>
-        // 🔐 OPENROUTER API KEY 
-        const API_KEY = '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';
-
-        // OpenRouter configuration
-        const API_URL = 'https://openrouter.ai/api/v1/chat/completions';
-        const MODEL = 'deepseek/deepseek-r1-0528:free';
-        const YOUR_SITE_URL = 'https://utsavdwivedi51.github.io/QuickTalk---Modern-AI-Chat/';
-        const YOUR_SITE_NAME = 'QuickTalk';
-
-        // Conversation history
-        let conversationHistory = [
-            { role: 'system', content: 'You are a helpful, friendly AI assistant. You can analyze images and documents that users share with you. When users share files, provide detailed analysis and extract relevant information.' }
-        ];
-
-        // Store attached files
-        let attachedFiles = [];
-
-        // DOM elements
-        const chatMessages = document.getElementById('chat-messages');
-        const userInput = document.getElementById('user-input');
-        const sendBtn = document.getElementById('send-btn');
-        const themeToggle = document.getElementById('theme-toggle');
-        const themeIcon = document.getElementById('theme-icon');
-        const attachmentBtn = document.getElementById('attachment-btn');
-        const attachmentMenu = document.getElementById('attachment-menu');
-        const filePreviewContainer = document.getElementById('file-preview-container');
-        
-        // File input elements
-        const photoInput = document.getElementById('photo-input');
-        const cameraInput = document.getElementById('camera-input');
-        const fileInput = document.getElementById('file-input');
-
-        // Attachment menu options
-        const photoOption = document.getElementById('photo-option');
-        const cameraOption = document.getElementById('camera-option');
-        const fileOption = document.getElementById('file-option');
-
-        // ===== THEME MANAGEMENT =====
-        function initTheme() {
-            const savedTheme = localStorage.getItem('theme') || 'dark';
-            document.documentElement.setAttribute('data-theme', savedTheme);
-            updateThemeIcon(savedTheme);
-        }
-
-        function toggleTheme() {
-            const currentTheme = document.documentElement.getAttribute('data-theme');
-            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
-            document.documentElement.setAttribute('data-theme', newTheme);
-            localStorage.setItem('theme', newTheme);
-            updateThemeIcon(newTheme);
-        }
-
-        function updateThemeIcon(theme) {
-            themeIcon.textContent = theme === 'light' ? '🌙' : '☀️';
-        }
-
-        themeToggle.addEventListener('click', toggleTheme);
-
-        // ===== ATTACHMENT MENU =====
-        attachmentBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            attachmentMenu.classList.toggle('active');
-        });
-
-        // Close menu when clicking outside
-        document.addEventListener('click', (e) => {
-            if (!attachmentBtn.contains(e.target) && !attachmentMenu.contains(e.target)) {
-                attachmentMenu.classList.remove('active');
-            }
-        });
-
-        // Attachment options
-        photoOption.addEventListener('click', () => {
-            photoInput.click();
-            attachmentMenu.classList.remove('active');
-        });
-
-        cameraOption.addEventListener('click', () => {
-            cameraInput.click();
-            attachmentMenu.classList.remove('active');
-        });
-
-        fileOption.addEventListener('click', () => {
-            fileInput.click();
-            attachmentMenu.classList.remove('active');
-        });
-
-        // ===== FILE HANDLING =====
-        photoInput.addEventListener('change', (e) => handleFileSelect(e.target.files));
-        cameraInput.addEventListener('change', (e) => handleFileSelect(e.target.files));
-        fileInput.addEventListener('change', (e) => handleFileSelect(e.target.files));
-
-        function handleFileSelect(files) {
-            for (let file of files) {
-                if (file.size > 10 * 1024 * 1024) { // 10MB limit
-                    alert(`File ${file.name} is too large. Maximum size is 10MB.`);
-                    continue;
-                }
-                attachedFiles.push(file);
-                addFilePreview(file);
-            }
-            updateFilePreviewContainer();
-        }
-
-        function addFilePreview(file) {
-            const preview = document.createElement('div');
-            preview.classList.add('file-preview');
-            preview.dataset.fileName = file.name;
-
-            if (file.type.startsWith('image/')) {
-                const img = document.createElement('img');
-                img.src = URL.createObjectURL(file);
-                preview.appendChild(img);
-            } else {
-                const fileInfo = document.createElement('div');
-                fileInfo.classList.add('file-preview-info');
-                fileInfo.innerHTML = `
-                    <span class="file-icon">${getFileIcon(file.type)}</span>
-                    <div class="file-details">
-                        <div class="file-name">${file.name}</div>
-                        <div class="file-size">${formatFileSize(file.size)}</div>
-                    </div>
-                `;
-                preview.appendChild(fileInfo);
-            }
-
-            const removeBtn = document.createElement('button');
-            removeBtn.classList.add('remove-file');
-            removeBtn.textContent = '×';
-            removeBtn.onclick = () => removeFile(file.name);
-            preview.appendChild(removeBtn);
-
-            filePreviewContainer.appendChild(preview);
-        }
-
-        function removeFile(fileName) {
-            attachedFiles = attachedFiles.filter(f => f.name !== fileName);
-            const preview = filePreviewContainer.querySelector(`[data-file-name="${fileName}"]`);
-            if (preview) preview.remove();
-            updateFilePreviewContainer();
-        }
-
-        function updateFilePreviewContainer() {
-            if (attachedFiles.length > 0) {
-                filePreviewContainer.classList.add('active');
-            } else {
-                filePreviewContainer.classList.remove('active');
-            }
-        }
-
-        function getFileIcon(type) {
-            if (type.includes('pdf')) return '📕';
-            if (type.includes('word') || type.includes('document')) return '📘';
-            if (type.includes('text')) return '📝';
-            if (type.includes('csv') || type.includes('excel')) return '📊';
-            return '📄';
-        }
-
-        function formatFileSize(bytes) {
-            if (bytes < 1024) return bytes + ' B';
-            if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
-            return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
-        }
-
-        // ===== MESSAGE FUNCTIONS =====
-        function getCurrentTime() {
-            const now = new Date();
-            return now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
-        }
-
-        async function addMessageToUI(role, content, files = []) {
-            const welcomeMsg = document.querySelector('.welcome-message');
-            if (welcomeMsg) welcomeMsg.remove();
-
-            const messageDiv = document.createElement('div');
-            messageDiv.classList.add('message', role === 'user' ? 'user-message' : 'bot-message');
-            
-            const avatar = document.createElement('div');
-            avatar.classList.add('message-avatar');
-            avatar.textContent = role === 'user' ? '👤' : '🤖';
-            
-            const bubbleWrapper = document.createElement('div');
-            
-            const bubble = document.createElement('div');
-            bubble.classList.add('message-bubble');
-            bubble.textContent = content;
-
-            // Add file attachments
-            if (files.length > 0) {
-                for (let file of files) {
-                    const attachment = document.createElement('div');
-                    attachment.classList.add('file-attachment');
-
-                    if (file.type.startsWith('image/')) {
-                        const img = document.createElement('img');
-                        img.src = URL.createObjectURL(file);
-                        img.alt = file.name;
-                        attachment.appendChild(img);
-                    } else {
-                        const fileInfo = document.createElement('div');
-                        fileInfo.classList.add('file-info');
-                        fileInfo.innerHTML = `
-                            <span class="file-icon">${getFileIcon(file.type)}</span>
-                            <div class="file-details">
-                                <div class="file-name">${file.name}</div>
-                                <div class="file-size">${formatFileSize(file.size)}</div>
-                            </div>
-                        `;
-                        attachment.appendChild(fileInfo);
-                    }
-
-                    bubble.appendChild(attachment);
-                }
-            }
-            
-            bubbleWrapper.appendChild(bubble);
-            messageDiv.appendChild(avatar);
-            messageDiv.appendChild(bubbleWrapper);
-            
-            chatMessages.appendChild(messageDiv);
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-        }
-
-        function showTypingIndicator() {
-            const indicator = document.createElement('div');
-            indicator.classList.add('typing-indicator');
-            indicator.id = 'typing-indicator';
-            
-            const avatar = document.createElement('div');
-            avatar.classList.add('message-avatar');
-            avatar.textContent = '🤖';
-            
-            const typingBubble = document.createElement('div');
-            typingBubble.classList.add('typing-bubble');
-            
-            for (let i = 0; i < 3; i++) {
-                const dot = document.createElement('span');
-                typingBubble.appendChild(dot);
-            }
-            
-            indicator.appendChild(avatar);
-            indicator.appendChild(typingBubble);
-            chatMessages.appendChild(indicator);
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-        }
-
-        function removeTypingIndicator() {
-            const indicator = document.getElementById('typing-indicator');
-            if (indicator) indicator.remove();
-        }
-
-        // ===== FILE PROCESSING =====
-        async function fileToBase64(file) {
-            return new Promise((resolve, reject) => {
-                const reader = new FileReader();
-                reader.onload = () => resolve(reader.result.split(',')[1]);
-                reader.onerror = reject;
-                reader.readAsDataURL(file);
-            });
-        }
-
-        async function extractTextFromFile(file) {
-            return new Promise((resolve, reject) => {
-                const reader = new FileReader();
-                reader.onload = () => resolve(reader.result);
-                reader.onerror = reject;
-                reader.readAsText(file);
-            });
-        }
-
-        // ===== API CALL =====
-        async function getBotResponse(userMessage, files = []) {
-            const messageContent = [];
-
-            // Add text content
-            if (userMessage.trim()) {
-                messageContent.push({
-                    type: 'text',
-                    text: userMessage
-                });
-            }
-
-            // Process files
-            for (let file of files) {
-                if (file.type.startsWith('image/')) {
-                    // Handle images
-                    const base64 = await fileToBase64(file);
-                    messageContent.push({
-                        type: 'image_url',
-                        image_url: {
-                            url: `data:${file.type};base64,${base64}`
-                        }
-                    });
-                } else {
-                    // Handle text-based files
-                    try {
-                        const text = await extractTextFromFile(file);
-                        messageContent.push({
-                            type: 'text',
-                            text: `Content of ${file.name}:\n\n${text}`
-                        });
-                    } catch (error) {
-                        messageContent.push({
-                            type: 'text',
-                            text: `[Unable to read file: ${file.name}]`
-                        });
-                    }
-                }
-            }
-
-            conversationHistory.push({
-                role: 'user',
-                content: messageContent.length === 1 ? messageContent[0].text : messageContent
-            });
-
-            try {
-                const response = await fetch(API_URL, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${API_KEY}`,
-                        'HTTP-Referer': YOUR_SITE_URL,
-                        'X-Title': YOUR_SITE_NAME
-                    },
-                    body: JSON.stringify({
-                        model: MODEL,
-                        messages: conversationHistory,
-                        temperature: 0.7,
-                        max_tokens: 2000
-                    })
-                });
-
-                if (!response.ok) {
-                    const error = await response.json();
-                    throw new Error(error.error?.message || `API request failed with status ${response.status}`);
-                }
-
-                const data = await response.json();
-                const botReply = data.choices[0].message.content;
-
-                conversationHistory.push({ role: 'assistant', content: botReply });
-                
-                return botReply;
-            } catch (error) {
-                console.error('Error:', error);
-                return `⚠️ Error: ${error.message}. Please check your network or try again.`;
-            }
-        }
-
-        // ===== SEND MESSAGE =====
-        async function handleSendMessage() {
-            const userMessage = userInput.value.trim();
-            const files = [...attachedFiles];
-
-            if (!userMessage && files.length === 0) return;
-
-            userInput.disabled = true;
-            sendBtn.disabled = true;
-            attachmentBtn.disabled = true;
-
-            await addMessageToUI('user', userMessage || '📎 Attached files', files);
-            
-            userInput.value = '';
-            userInput.style.height = 'auto';
-
-            // Clear attachments
-            attachedFiles = [];
-            filePreviewContainer.innerHTML = '';
-            updateFilePreviewContainer();
-
-            // Reset file inputs
-            photoInput.value = '';
-            cameraInput.value = '';
-            fileInput.value = '';
-
-            showTypingIndicator();
-
-            const botResponse = await getBotResponse(userMessage, files);
-
-            removeTypingIndicator();
-            await addMessageToUI('bot', botResponse);
-
-            userInput.disabled = false;
-            sendBtn.disabled = false;
-            attachmentBtn.disabled = false;
-            userInput.focus();
-        }
-
-        // ===== AUTO-RESIZE TEXTAREA =====
-        userInput.addEventListener('input', function() {
-            this.style.height = 'auto';
-            this.style.height = Math.min(this.scrollHeight, 120) + 'px';
-        });
-
-        // ===== EVENT LISTENERS =====
-        sendBtn.addEventListener('click', handleSendMessage);
-        
-        userInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                handleSendMessage();
-            }
-        });
-
-        // ===== INITIALIZATION =====
-        initTheme();
-        userInput.focus();
-    </script>
+    <script src="script.js"></script>
 </body>
+
 </html>
