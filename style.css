@@ -817,11 +817,21 @@ body {
     }
 }
 
+
 /* ===== RESPONSIVE ===== */
+/* Tablet & Mobile Container Adjustments */
+@media (max-width: 1024px) {
+    .chat-container {
+        max-width: 95%;
+        height: 92vh;
+    }
+}
+
 @media (max-width: 768px) {
     body {
         padding: 0;
         align-items: flex-start;
+        /* Align top on mobile */
     }
 
     .chat-container {
@@ -842,5 +852,109 @@ body {
 
     .welcome-title {
         font-size: 1.5rem;
+    }
+
+    .chat-header {
+        padding: 12px 16px;
+    }
+
+    .input-wrapper {
+        padding: 6px;
+    }
+
+    .suggestion-chips {
+        gap: 8px;
+    }
+
+    .chip {
+        padding: 8px 14px;
+        font-size: 0.85rem;
+    }
+}
+
+/* Mobile Specific */
+@media (max-width: 480px) {
+    .header-title .title {
+        font-size: 1rem;
+    }
+
+    .header-title .subtitle {
+        font-size: 0.75rem;
+    }
+
+    .logo-container {
+        width: 36px;
+        height: 36px;
+    }
+
+    .message {
+        max-width: 95%;
+        gap: 10px;
+    }
+
+    .message-avatar {
+        width: 30px;
+        height: 30px;
+        font-size: 14px;
+    }
+
+    .message-bubble {
+        padding: 12px 16px;
+        font-size: 0.9rem;
+    }
+
+    .chat-input-container {
+        padding: 12px 16px 20px;
+    }
+
+    .attachment-btn,
+    .send-btn {
+        width: 40px;
+        height: 40px;
+    }
+
+    .input-field {
+        font-size: 0.95rem;
+        padding: 10px 8px;
+    }
+
+    .typing-indicator {
+        margin-left: 42px;
+        padding: 10px 14px;
+    }
+
+    .typing-dot {
+        width: 5px;
+        height: 5px;
+    }
+
+    .welcome-visual {
+        width: 60px;
+        height: 60px;
+    }
+
+    .welcome-icon {
+        font-size: 30px;
+    }
+
+    .welcome-subtitle {
+        font-size: 0.9rem;
+        padding: 0 10px;
+    }
+}
+
+/* Landscape on Mobile */
+@media (max-height: 500px) and (orientation: landscape) {
+    .chat-header {
+        padding: 8px 16px;
+    }
+
+    .welcome-visual {
+        display: none;
+    }
+
+    .logo-container {
+        width: 32px;
+        height: 32px;
     }
 }
