@@ -590,15 +590,18 @@
                 padding: 10px 12px;
             }
         }
-
+.file-buttons {
+    flex-wrap: wrap;
+    gap: 8px;
+}
         @media (max-width: 380px) {
-            .file-btn span {
-                display: none; /* Hide text, keep icons on very small screens */
-            }
-            .file-btn {
-                padding: 10px;
-            }
-        }
+    .file-btn .btn-text {
+        display: none;  /* ✅ Hide only the text label */
+    }
+    .file-btn {
+        padding: 10px;   /* Keep icon only, comfortable touch target */
+    }
+}
 
         /* iOS Safari specific fixes */
         @supports (-webkit-touch-callout: none) {
@@ -676,16 +679,16 @@
             
             <!-- File upload buttons -->
             <div class="file-buttons">
-                <button id="uploadGalleryBtn" class="file-btn">
-                    <span>📷</span> <span>Add photo</span>
-                </button>
-                <button id="uploadCameraBtn" class="file-btn">
-                    <span>📸</span> <span>Take photo</span>
-                </button>
-                <button id="uploadFileBtn" class="file-btn">
-                    <span>📁</span> <span>Add files</span>
-                </button>
-            </div>
+    <button id="uploadGalleryBtn" class="file-btn">
+        <span class="btn-icon">📷</span> <span class="btn-text">Gallery</span>
+    </button>
+    <button id="uploadCameraBtn" class="file-btn">
+        <span class="btn-icon">📸</span> <span class="btn-text">Open Camera</span>
+    </button>
+    <button id="uploadFileBtn" class="file-btn">
+        <span class="btn-icon">📁</span> <span class="btn-text">Add Files</span>
+    </button>
+</div>
         </div>
     </div>
 
