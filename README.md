@@ -1,4 +1,4 @@
-**QuickTalk - Modern AI Chat Application**
+## QuickTalk - Modern AI Chat Application
 A responsive, feature-rich web-based AI chatbot with WhatsApp-style file uploads, real-time messaging, and intelligent conversation management. Built with vanilla JavaScript and integrated with OpenRouter's DeepSeek R1 model for natural language processing.
 
 ## Features:
