@@ -11,9 +11,9 @@ A responsive, feature-rich web-based AI chatbot with WhatsApp-style file uploads
 - Typing indicators and smooth animations
 
 ## Technical Skills:
-• Frontend: JavaScript, HTML, CSS, Responsive Design, Mobile-First Development
-• APIs: RESTful API Integration, OpenRouter API, File Upload APIs
-• AI/ML: AI Model Integration, Natural Language Processing, Conversation Context Management
-• Tools: FileReader API, Base64 Encoding, Local Storage, Git
+- Frontend: JavaScript, HTML, CSS, Responsive Design, Mobile-First Development
+- APIs: RESTful API Integration, OpenRouter API, File Upload APIs
+- AI/ML: AI Model Integration, Natural Language Processing, Conversation Context Management
+- Tools: FileReader API, Base64 Encoding, Local Storage, Git
 
 Live Demo: https://utsavdwivedi51.github.io/QuickTalk---Modern-AI-Chat/
