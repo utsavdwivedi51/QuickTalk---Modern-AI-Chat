@@ -1,5 +1,5 @@
-// 🔐 OPENROUTER API KEY 
-const API_KEY = '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';
+//  OPENROUTER API KEY 
+const API_KEY = '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';
 
 // OpenRouter configuration
 const API_URL = 'https://openrouter.ai/api/v1/chat/completions';
