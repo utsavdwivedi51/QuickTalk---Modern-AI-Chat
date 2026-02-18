@@ -1,9 +1,9 @@
 //  OPENROUTER API KEY 
-const API_KEY = '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';
+const API_KEY = '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';
 
 // OpenRouter configuration
-const API_URL = 'https://openrouter.ai/api/v1/chat/completions';
-const MODEL = 'deepseek/deepseek-r1-0528:free';
+const API_URL = 'https://openrouter.ai/api/v1/embeddings';
+const MODEL = 'google/gemini-embedding-001';
 const YOUR_SITE_URL = 'https://utsavdwivedi51.github.io/QuickTalk---Modern-AI-Chat/';
 const YOUR_SITE_NAME = 'QuickTalk';
 
